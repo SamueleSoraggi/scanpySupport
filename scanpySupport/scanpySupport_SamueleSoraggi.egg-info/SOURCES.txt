@@ -1,0 +1,6 @@
+README.md
+setup.py
+scanpySupport_SamueleSoraggi.egg-info/PKG-INFO
+scanpySupport_SamueleSoraggi.egg-info/SOURCES.txt
+scanpySupport_SamueleSoraggi.egg-info/dependency_links.txt
+scanpySupport_SamueleSoraggi.egg-info/top_level.txt
