@@ -42,7 +42,7 @@ def sctransform(adata,
         ro.globalenv['rawMatrix'] = adata.X.T
 
     if latent is None:
-        latent_var = [adata_flt.obs_keys()[0]]
+        latent_var = [adata.obs_keys()[0]]
     else:
         latent_var=latent
     ro.globalenv['cells_info'] = adata.obs[ latent_var ]
@@ -68,8 +68,9 @@ def sctransform(adata,
     if batch is not None:
         batch = '"data.'+batch+'"'
         stringCommand = stringCommand + ', batch_var=' + batch
+        if len(latent_var)>1:
+            latent_var.remove(batch)
     if ((len(latent_var)>1) and (batch is not None))|((len(latent_var)>=1) and (batch is None)):
-        latent_var.remove(batch)
         #print(latent_var)
         stringCommand = stringCommand + ', latent_var=c(' + ','.join(latent_var) + ')'
     stringCommand += ')'
