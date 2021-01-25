@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="scanpySupport-SamueleSoraggi", # Replace with your own username
-    version="0.0.1",
+    version="0.0.2",
     author="Samuele Soraggi",
     author_email="samuele.soraggi@gmail.com",
     description="A support package to speed up single cell analysis with scanpy",

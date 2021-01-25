@@ -1,0 +1,34 @@
+def plotQC(adata):
+    """
+    Function for plotting QC values. 
+    Needs to run preprocess.calculateQC first.
+    """
+    from scipy.sparse import issparse
+    import scanpy as sc
+    import matplotlib.pyplot as plt
+    from matplotlib import rcParams
+    import pandas as pd
+    import numpy as np
+    import seaborn as sns
+    
+    
+    df=pd.DataFrame(index=adata.obs_names)
+    df['total_counts'] = adata.obs['total_counts']
+    df['n_genes_per_cell'] = adata.obs['n_genes_by_counts']
+    if 'chromosome' in adata.var_keys():
+        df['percent_mito'] = adata.obs['percent_mito']
+    else:
+        df['percent_mito'] = np.zeros(adata.shape[0])
+        
+    plt.rcParams['figure.figsize']=(20,20)
+    f, ax = plt.subplots(2,2)
+    sns.scatterplot(x='total_counts', y='n_genes_per_cell', hue='percent_mito', data=df, ax=ax[0,0])
+    ax[0,0].set_title('UMI vs GENES plot - percent mito genes')
+    sns.distplot(df['total_counts'], ax=ax[0,1])
+    ax[0,1].set_title('UMI counts per cell')
+    sns.distplot(df['n_genes_per_cell'], ax=ax[1,0])
+    ax[1,0].set_title('Genes per cell')
+    if ('spliced' in layers)and('unspliced' in layers):
+        df['rate_spliced'] = adata.obs['prop_spl']
+        sns.scatterplot(x='total_counts', y='n_genes_per_cell', hue='rate_spliced', data=df, ax=ax[1,1])
+        ax[1,0].set_title('UMI vs GENES plot - spliced proportions')

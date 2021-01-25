@@ -1,0 +1,31 @@
+def calculateQC(adata):
+    """
+    Function for calculating and plotting QC values. 
+    It can be followed by filteringQC to apply filters.
+    """
+    if(calculate):
+        sc.preprocessing.calculate_qc_metrics(adata, inplace=True)
+        
+        if spy.sparse.issparse(adata.X):
+            #adata.obs['percent_mito'] = np.sum( adata[:, mito_genes].X, axis=1).A1 / np.sum(adata.X, axis=1).A1
+            adata.obs['n_counts'] = adata.X.sum(axis=1).A1
+        else:
+            #adata.obs['percent_mito'] = np.sum( adata[:, mito_genes].X, axis=1) / np.sum(adata.X, axis=1)
+            adata.obs['n_counts'] = adata.X.sum(axis=1)
+        n_counts_Zscore = adata.obs['n_counts']
+        n_counts_Zscore = (n_counts_Zscore - np.mean(n_counts_Zscore)) / np.std(n_counts_Zscore)
+        n_counts_Zscore.name = 'n_counts_Zscore'
+    if(show):
+        fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(10,10), sharex=False)
+        #sns.distplot( adata.obs['n_counts'], color="blue", ax=ax[0])
+        sc.pl.violin( adata, 'n_counts', groupby='batch', size=2, log=True, cut=0, ax=ax[0], show=False)
+        #sns.distplot( n_counts_Zscore, color="blue", ax=ax[1])
+        #sc.pl.violin( adata, 'percent_mito', groupby='batch', size=2, log=False, cut=0.001, ax=ax[1], show=False)
+        plt.show()
+        plt.rcParams['figure.figsize']=(8,8)
+        #for b in np.unique(adata.obs['batch']):
+        #    t0=sns.distplot(adata[adata.obs['batch'] == b].obs['percent_mito'], rug=False, hist=False, kde=True)
+        t1=sc.pl.scatter(adata, x='n_counts',y='n_genes_by_counts', color='batch')
+        #t2=sc.pl.scatter(adata, x='n_counts',y='n_genes_by_counts', color='percent_mito')
+
+        

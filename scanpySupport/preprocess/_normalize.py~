@@ -1,0 +1,52 @@
+#import rpy2.rinterface_lib.callbacks
+#import logging
+#from rpy2.robjects import pandas2ri
+#import anndata2ri
+
+
+def sctransform(adata,
+                genes=2000,
+                min_genes_per_cell=5,
+                method='poisson',
+                latent_var='total_counts'
+                cores=1,
+                memory=10):
+    """
+    Function to use scTransform. It needs at least the adata.obj['total_counts'] number of UMIs calculated in the data.
+    """
+    import rpy2.robjects as ro
+    import anndata2ri
+
+    ro.r('library(Seurat)')
+    ro.r('library(sctransform)')
+    ro.r('library(future)')
+    anndata2ri.activate()
+
+    print('Filtering genes:')
+    sc.pp.filter_genes(adata, min_cells=min_genes_per_cell)
+    
+    if issparse(adata.X):
+        ro.globalenv['rawMatrix'] = adata.X.todense()
+    else:
+        ro.globalenv['rawMatrix'] = adata.X.todense()
+
+    ro.globalenv['cells_info'] = adata.obs[ latent_var ].copy()
+    ro.globalenv['genes_name'] = adata.var_names
+    
+    for key in adata.layers:
+        if issparse(adata.layers[key]):
+            if not adata.layers[key].has_sorted_indices:
+                adata.layers[key].sort_indices()
+
+    ro.globalenv['adata'] = adata
+
+    ro.r('seurat_obj = as.Seurat(adata, counts="X", data = NULL)')
+
+    ro.r('res <- SCTransform(object=seurat_obj, return.only.var.genes = FALSE, do.correct.umi = FALSE)')
+
+    norm_x = ro.r('res@assays$SCT@scale.data').T
+
+    adata.layers['normalized'] = norm_x
+
+    if output_file:
+        adata.write(output_file)
