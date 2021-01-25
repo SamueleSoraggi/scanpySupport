@@ -1,4 +1,5 @@
 import sys
+#initialization file
 
 __author__ = ', '.join([
     'Samuele Soraggi',

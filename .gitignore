@@ -1,3 +1,6 @@
-scanpySupport/dist/
-scanpySupport/scanpySupport_SamueleSoraggi.egg-info/
-scanpySupport/build/
+dist/
+scanpySupport_SamueleSoraggi.egg-info/
+build/
+.RData
+.Rhistory
+setup.py~
